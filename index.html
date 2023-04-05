@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/dist/output.css" rel="stylesheet">
+	<script src="/src/index.js"></script>
+	<script src="/src/scheduler.js"></script>
+	<title>Project 2 Visualization</title>
+</head>
+<body class="flex flex-col custom-scrollbar">
+  <div class="h-screen min-h-[100vh] flex flex-col">
+		<h1 class="flex-0 text-3xl font-bold px-4 pt-4">
+			Project 2 Visualization
+		</h1>
+		<p class="text-md p-4">
+			테스트 케이스는 랜덤으로 생성됩니다. 원하는 테스트 케이스가 있다면 아래 페이지에 입력하세요.<br />
+			프로세스를 Kill 하고 싶다면 해당하는 블록을 마우스로 클릭하세요.<br />
+			각도 화살표를 드래그하면 각도를 조절할 수 있습니다.
+		</p>
+		<!-- stack and bar -->
+		<div class="flex-1 flex flex-col overflow-hidden">
+			<!-- request stack -->
+			<div id="stack" class="flex flex-col-reverse overflow-y-scroll custom-scrollbar flex-1">
+				<div id="stack-template" class="shrink-0 w-full transition-all overflow-hidden">
+					<div class="stack-background relative w-full rounded-lg bg-gray-200 transition-color my-1 px-4 py-2 flex flex-col">
+						<div class="relative">
+							<div class="range-block absolute left-0 top-0 right-0 bg-blue-500 flex flex-row items-center py-1"></div>
+							<p class="center-label text-md text-gray-800 w-full text-center mt-4">WRITE #1</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="bar" class="flex-0 mx-4 mb-4 relative flex flex-row items-center h-16 select-none">
+				<!-- orientation bar -->
+				<div class="w-0.5 h-2 bg-black left-0"></div>
+				<div class="h-0.5 bg-black w-full"></div>
+				<div class="w-0.5 h-2 bg-black right-0"></div>
+				<!-- orientation notation -->
+				<!-- orientation pointer -->
+				<div id="pointer" class="absolute left-[0%] translate-x-[-50%] text-center top-2 bottom-0">
+					<span id="pointer-tip" class="cursor-pointer">▼</span>
+					<div id="current-orientation" class="absolute left-[50%] translate-x-[-50%] bottom-0 text-sm">0</div>
+					<div class="absolute left-[50%] translate-x-[-50%] top-[-100vh] bottom-12 p-[1px] bg-gray-800"></div>
+				</div>
+			</div>
+		</div>
+		<!-- control interface -->
+		<div class="flex-0 flex flex-col">
+			<div class="flex flex-row items-center gap-2 px-4">
+				<input id="speed-range" class="p-2 border border-gray-500 rounded-md w-40" type="range" min="0" max="90" value="15" step="1" />
+				<p id="speed-label" class="text-md">회전 속도: 15°/s</p>
+				<div class="flex-1"></div>
+				<button id="start-button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">Start</button>
+				<button id="reset-button" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors">Reset</button>
+			</div>
+			<p class="p-4 text-xl font-bold">빠른 추가</p>
+			<div class="flex flex-row items-stretch px-4 pb-4 gap-2">
+				<select id="add-type" class="p-2 border border-gray-500 rounded-md flex-1" value="">
+					<option value="WRITE">WRITE</option>
+					<option value="READ">READ</option>
+					<option value="RANDOM">RANDOM</option>
+				</select>
+				<input id="add-low" class="p-2 border border-gray-500 rounded-md flex-1" type="text" value="" placeholder="low"/>
+				<input id="add-high" class="p-2 border border-gray-500 rounded-md flex-1" type="text" value="" placeholder="high"/>
+				<button id="add-button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">추가</button>
+			</div>
+		</div>
+	</div>
+	<!-- 테스트 케이스 입력 창-->
+	<div class="flex flex-col">
+		<div class="flex flex-row items-center gap-1 px-4">
+			<h3 class="text-xl font-bold">테스트 케이스</h3>
+			<input type="checkbox" id="random-checkbox" checked class="ml-4" />
+			<label for="random-checkbox" class="select-none">랜덤</label>
+		</div>
+		<p class="text-md px-4 py-2">
+			입력 후 Reset 버튼을 누르면 적용됩니다.<br />
+			대소문자는 구별하지 않아도 됩니다.
+		</p>
+		<textarea id="testcase" class="mx-4 mb-4 p-4 border border-gray-500 h-80 rounded-md" placeholder="예시)&#13;&#10;WRITE 10 30&#13;&#10;READ 10 50&#13;&#10;READ 20 60"></textarea>
+	</div>
+</body>
+</html>
