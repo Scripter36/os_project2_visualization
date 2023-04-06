@@ -167,7 +167,7 @@ function init() {
 	orientation_changing = false;
 	rotateSpeed = 15;
 	document.getElementById('speed-range').value = rotateSpeed;
-	document.getElementById('speed-label').innerText = `회전 속도: ${rotateSpeed}°/s`;
+	document.getElementById('speed-label').innerText = `Rotation speed: ${rotateSpeed}°/s`;
 	updateStartButton();
 	startProgram();
 	startRotation();
@@ -264,6 +264,6 @@ window.addEventListener('load', () => {
 	const speedLabel = document.getElementById('speed-label');
 	speedRange.addEventListener('input', () => {
 		rotateSpeed = speedRange.value;
-		speedLabel.innerText = `회전 속도: ${rotateSpeed}°/s`;
+		speedLabel.innerText = `Rotation speed: ${rotateSpeed}°/s`;
 	});
 });
