@@ -1,9 +1,14 @@
 {
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "tailwindcss": "^3.3.1"
   },
   "scripts": {
     "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css",
-    "watch:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+    "watch:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "copy:css": "npx copyfiles ./dist/output.css ./public/",
+    "copy:js": "npx copyfiles ./src/*.js ./public/",
+    "copy:html": "npx copyfiles ./index.html ./public/",
+    "build": "npm run build:css && npm run copy:css && npm run copy:js && npm run copy:html"
   }
 }
