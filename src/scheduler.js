@@ -1,12 +1,12 @@
 let current_orientation = 0;
 const state = Array(360).fill(0);
-const write_state = Array(360).fill(0);
+const waiting_write = Array(360).fill(0);
 const lock_list = [];
 
 function init_scheduler () {
 	// current_orientation = 0;
 	state.fill(0);
-	write_state.fill(0);
+	waiting_write.fill(0);
 	lock_list.splice(0, lock_list.length);
 }
 
@@ -28,7 +28,6 @@ function get_range(low, high) {
 }
 
 function check_list() {
-	write_state.fill(0);
 	for (const lock_data of lock_list) {
 		if (lock_data == null) continue;
 		if (lock_data.type === 'WRITE') {
@@ -37,12 +36,12 @@ function check_list() {
 				get_range(lock_data.low, lock_data.high).forEach((i) => {
 					state[i] = -1;
 				});
+				get_range(lock_data.low, lock_data.high).forEach((i) => {
+					waiting_write[i] -= 1;
+				});
 			}
-			get_range(lock_data.low, lock_data.high).forEach((i) => {
-				write_state[i] = 1;
-			});
 		} else {
-			if (lock_data.state !== 'EXECUTING' && get_range(lock_data.low, lock_data.high).every((i) => state[i] !== -1) && get_range(lock_data.low, lock_data.high).includes(current_orientation) && get_range(lock_data.low, lock_data.high).every((i) => write_state[i] === 0)) {
+			if (lock_data.state !== 'EXECUTING' && get_range(lock_data.low, lock_data.high).every((i) => state[i] !== -1) && get_range(lock_data.low, lock_data.high).includes(current_orientation) && get_range(lock_data.low, lock_data.high).every((i) => waiting_write[i] === 0)) {
 				lock_data.state = 'EXECUTING';
 				get_range(lock_data.low, lock_data.high).forEach((i) => {
 					state[i] += 1;
@@ -65,19 +64,7 @@ function rotation_lock(low, high, type) {
 		state: 'EXECUTING'
 	};
 	if (type === 'READ') {
-		if (get_range(low, high).some((i) => state[i] === -1) || !get_range(low, high).includes(current_orientation)) {
-			new_lock_data.state = 'LOCKED';
-		}
-		write_state.fill(0);
-		for (const lock_data of lock_list) {
-			if (lock_data == null) continue;
-			if (lock_data.type === 'WRITE') {
-				get_range(lock_data.low, lock_data.high).forEach((i) => {
-					write_state[i] = 1;
-				});
-			}
-		}
-		if (get_range(low, high).some((i) => write_state[i] === 1)) {
+		if (get_range(low, high).some((i) => state[i] === -1) || !get_range(low, high).includes(current_orientation) || get_range(low, high).some((i) => waiting_write[i] === 1)) {
 			new_lock_data.state = 'LOCKED';
 		}
 		if (new_lock_data.state === 'EXECUTING') {
@@ -92,6 +79,10 @@ function rotation_lock(low, high, type) {
 		if (new_lock_data.state === 'EXECUTING') {
 			get_range(low, high).forEach((i) => {
 				state[i] = -1;
+			});
+		} else {
+			get_range(low, high).forEach((i) => {
+				waiting_write[i] += 1;
 			});
 		}
 	}
